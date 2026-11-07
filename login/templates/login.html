@@ -1,0 +1,20 @@
+{% extends 'template.html' %}
+
+{% block titulo %}Entrar{% endblock %}
+
+{% block conteudo %}
+<section class="auth-layout">
+    <div class="auth-aside"><span class="eyebrow">Academia Tech</span><h1>Bom ter você de volta.</h1><p>Acesse sua conta para continuar aprendendo e acompanhar seus cursos.</p><div class="auth-decoration" aria-hidden="true">A<span>T</span></div></div>
+    <div class="form-card auth-card">
+        <span class="eyebrow eyebrow-dark">Bem-vindo de volta</span><h2>Entrar na conta</h2><p class="form-intro">Informe seus dados para continuar.</p>
+        {% if form.errors %}<div class="notice notice-error">Usuário ou senha inválidos. Confira os dados e tente novamente.</div>{% endif %}
+        <form class="stacked-form" method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button class="button button-primary button-wide" type="submit">Entrar</button>
+        </form>
+        <p class="auth-switch"><a href="{% url 'password_reset' %}">Esqueceu a senha?</a></p>
+        <p class="auth-switch">Ainda não tem uma conta? <a href="{% url 'cadastro' %}">Novo usuário</a></p>
+    </div>
+</section>
+{% endblock %}

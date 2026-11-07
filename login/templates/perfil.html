@@ -1,0 +1,19 @@
+{% extends 'template.html' %}
+
+{% block titulo %} Perfil {% endblock %}
+
+{% block conteudo %}
+<section class="form-page">
+    <a class="back-link" href="{% url 'dashboard' %}">← Voltar à minha conta</a>
+    <div class="form-card">
+        <span class="eyebrow eyebrow-dark">Sua conta</span><h1>Meu perfil</h1><p class="form-intro">Mantenha seus dados pessoais atualizados.</p>
+        {% for message in messages %}<div class="notice notice-success">{{ message }}</div>{% endfor %}
+        <form class="stacked-form" method="post" action="{% url 'perfil' %}">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button class="button button-primary button-wide" type="submit">Salvar alterações</button>
+        </form>
+        <a class="text-action password-link" href="{% url 'alterar-senha' %}">Alterar senha <span aria-hidden="true">→</span></a>
+    </div>
+</section>
+{% endblock %}

@@ -1,0 +1,13 @@
+{% extends 'template.html' %}
+
+{% block titulo %} Dashboard {% endblock %}
+
+{% block conteudo %}
+<section class="page-heading"><div><span class="eyebrow eyebrow-dark">Área do aluno</span><h1>Olá, {{ user.first_name|default:user.username }}!</h1><p>Este é o seu espaço na Academia Tech. Acesse seu perfil e acompanhe seus cursos.</p></div></section>
+<section class="account-grid">
+    <article class="account-card"><span class="account-icon">◎</span><div><h2>Editar perfil</h2><p>Revise suas informações pessoais e mantenha seu cadastro atualizado.</p><a class="text-action" href="{% url 'perfil' %}">Editar perfil <span aria-hidden="true">→</span></a></div></article>
+    <article class="account-card"><span class="account-icon account-icon-alt">⌑</span><div><h2>Segurança</h2><p>Atualize sua senha sempre que precisar.</p><a class="text-action" href="{% url 'alterar-senha' %}">Alterar senha <span aria-hidden="true">→</span></a></div></article>
+    <article class="account-card"><span class="account-icon">▣</span><div><h2>Meus pedidos</h2><p>Consulte o carrinho e acompanhe os pedidos realizados.</p><a class="text-action" href="{% url 'meus-pedidos' %}">Abrir pedidos <span aria-hidden="true">→</span></a></div></article>
+    <article class="account-card"><span class="account-icon account-icon-alt">⌕</span><div><h2>Catálogo de cursos</h2><p>Explore cursos e encontre sua próxima trilha de aprendizado.</p><a class="text-action" href="{% url 'produtos' %}">Ver cursos <span aria-hidden="true">→</span></a></div></article>
+</section>
+{% endblock %}

@@ -1,0 +1,45 @@
+{% extends 'template.html' %}
+
+{% block titulo %}Aprenda tecnologia{% endblock %}
+
+{% block conteudo %}
+<section class="hero">
+    <div class="hero-copy">
+        <span class="eyebrow"><span class="eyebrow-dot"></span> Aprenda fazendo</span>
+        <h1>Construa hoje as habilidades que movem o futuro.</h1>
+        <p>Cursos de tecnologia com aulas práticas, projetos reais e apoio para você evoluir no seu ritmo.</p>
+        <div class="hero-actions">
+            <a class="button button-primary" href="{% url 'produtos' %}">Explorar cursos <span aria-hidden="true">→</span></a>
+            {% if not user.is_authenticated %}<a class="button button-quiet" href="{% url 'cadastro' %}">Criar uma conta</a>{% else %}<a class="button button-quiet" href="{% url 'dashboard' %}">Acessar painel</a>{% endif %}
+        </div>
+        <div class="hero-note"><span class="note-check">✓</span> Aulas práticas, certificado e acesso vitalício</div>
+    </div>
+    <div class="hero-art" aria-hidden="true">
+        <div class="art-glow"></div>
+        <div class="art-window">
+            <div class="window-bar"><span></span><span></span><span></span><i>academia tech</i></div>
+            <div class="window-content">
+                <div class="window-kicker">SEU PRÓXIMO PROJETO</div>
+                <div class="window-title"></div>
+                <div class="window-line"></div>
+                <div class="window-line short"></div>
+                <div class="window-progress"><span></span></div>
+                <div class="window-footer"><span>Aprendizado em prática</span><strong>100%</strong></div>
+            </div>
+        </div>
+        <div class="floating-badge"><span>✦</span> Conhecimento em movimento</div>
+    </div>
+</section>
+
+<section class="about-hero home-about">
+    <span class="eyebrow eyebrow-dark">O que é a Academia Tech?</span>
+    <h2>Uma plataforma para transformar curiosidade em competência.</h2>
+    <p>Reunimos cursos de programação, design, dados e infraestrutura em uma experiência direta: conteúdo aplicado, trilhas claras e espaço para construir um portfólio de verdade.</p>
+</section>
+
+<section class="home-highlights" aria-label="Por que estudar na Academia Tech">
+    <article class="highlight-card"><span class="highlight-icon">⌘</span><div><h2>Aulas práticas</h2><p>Aprenda criando projetos que você pode mostrar.</p></div><span aria-hidden="true">↗</span></article>
+    <article class="highlight-card"><span class="highlight-icon highlight-icon-teal">✓</span><div><h2>Certificado</h2><p>Conclua sua trilha e registre sua evolução.</p></div><span aria-hidden="true">↗</span></article>
+    <article class="highlight-card"><span class="highlight-icon highlight-icon-orange">∞</span><div><h2>Suporte e acesso vitalício</h2><p>Estude no seu ritmo e volte ao conteúdo quando quiser.</p></div><span aria-hidden="true">↗</span></article>
+</section>
+{% endblock %}

@@ -1,0 +1,17 @@
+{% extends 'template.html' %}
+
+{% block titulo %}Alterar senha{% endblock %}
+
+{% block conteudo %}
+<section class="form-page">
+    <a class="back-link" href="{% url 'dashboard' %}">← Voltar à minha conta</a>
+    <div class="form-card">
+        <span class="eyebrow eyebrow-dark">Segurança</span><h1>Alterar senha</h1><p class="form-intro">Escolha uma senha forte que você ainda não tenha usado.</p>
+        <form class="stacked-form" method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button class="button button-primary button-wide" type="submit">Atualizar senha</button>
+        </form>
+    </div>
+</section>
+{% endblock %}

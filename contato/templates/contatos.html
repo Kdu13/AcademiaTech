@@ -1,0 +1,27 @@
+{% extends 'template.html' %}
+
+{% block titulo %}Mensagens de Contato{% endblock %}
+
+{% block conteudo %}
+<section class="page-heading">
+    <div><span class="eyebrow eyebrow-dark">Administração</span><h1>Mensagens de contato</h1><p>Mensagens recebidas pelo formulário público.</p></div>
+    <a class="button button-secondary" href="{% url 'dashboard' %}">Voltar ao painel</a>
+</section>
+
+{% for message in messages %}<div class="notice notice-success" role="status">{{ message }}</div>{% endfor %}
+
+{% if contatos %}
+    <div class="table-wrap"><table class="data-table">
+        <thead><tr><th>Nome</th><th>E-mail</th><th>Telefone</th><th>Mensagem</th><th>Ação</th></tr></thead>
+        <tbody>{% for contato in contatos %}<tr>
+            <td data-label="Nome"><strong>{{ contato.nome }}</strong></td>
+            <td data-label="E-mail"><a href="mailto:{{ contato.email }}">{{ contato.email }}</a></td>
+            <td data-label="Telefone">{{ contato.telefone|default:'—' }}</td>
+            <td data-label="Mensagem">{{ contato.mensagem|linebreaksbr }}</td>
+            <td data-label="Ação"><form method="post" action="{% url 'excluir_contato' contato.id %}" onsubmit="return confirm('Excluir esta mensagem?');">{% csrf_token %}<button class="text-action danger-action" type="submit">Excluir</button></form></td>
+        </tr>{% endfor %}</tbody>
+    </table></div>
+{% else %}
+    <div class="empty-state"><span class="empty-icon">✉</span><h2>Nenhuma mensagem recebida</h2><p>As mensagens enviadas pelo formulário de contato aparecerão aqui.</p></div>
+{% endif %}
+{% endblock %}

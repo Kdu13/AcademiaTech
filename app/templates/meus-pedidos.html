@@ -1,0 +1,48 @@
+{% extends 'template.html' %}
+{% load moeda %}
+
+{% block titulo %}Meus Pedidos{% endblock %}
+
+{% block conteudo %}
+<section class="page-heading">
+    <div><span class="eyebrow eyebrow-dark">Área do cliente</span><h1>Meus pedidos</h1><p>Confira os itens do carrinho e os pedidos realizados.</p></div>
+    <a class="button button-secondary" href="{% url 'produtos' %}">Ver produtos</a>
+</section>
+
+{% for message in messages %}<div class="notice {% if message.tags == 'error' %}notice-error{% else %}notice-success{% endif %}" role="status">{{ message }}</div>{% endfor %}
+
+{% if pedidos %}
+    <div class="orders-list">
+        {% for pedido in pedidos %}
+        <section class="panel order-card">
+            <header class="order-header">
+                <div><span class="stat-label">Pedido #{{ pedido.id }}</span><h2>{{ pedido.get_status_display }}</h2><span class="stat-caption">Criado em {{ pedido.criado_em|date:'d/m/Y H:i' }}</span></div>
+                <strong class="order-total">Total: {{ pedido.total|moeda_brl }}</strong>
+            </header>
+            {% if pedido.itens.all %}
+                <div class="table-wrap"><table class="data-table">
+                    <thead><tr><th>Produto</th><th>Preço unitário</th><th>Quantidade</th><th>Subtotal</th>{% if pedido.status == 'carrinho' %}<th>Ação</th>{% endif %}</tr></thead>
+                    <tbody>{% for item in pedido.itens.all %}<tr>
+                        <td data-label="Produto"><div class="order-product">{% if item.imagem_url or item.servico.imagem %}<img class="table-image" src="{{ item.imagem_url|default:item.servico.imagem }}" alt="Imagem de {{ item.nome_servico }}" loading="lazy">{% else %}<span class="order-image-placeholder" aria-hidden="true">⌘</span>{% endif %}<strong>{{ item.nome_servico }}</strong></div></td>
+                        <td data-label="Preço unitário">{{ item.preco_unitario|moeda_brl }}</td>
+                        <td data-label="Quantidade">{{ item.quantidade }}</td>
+                        <td data-label="Subtotal"><span class="price-tag">{{ item.subtotal|moeda_brl }}</span></td>
+                        {% if pedido.status == 'carrinho' %}<td data-label="Ação"><form method="post" action="{% url 'remover_item_pedido' item.id %}">{% csrf_token %}<button class="text-action danger-action" type="submit">Remover</button></form></td>{% endif %}
+                    </tr>{% endfor %}</tbody>
+                </table></div>
+            {% else %}
+                <p class="order-empty">Este carrinho está vazio. <a href="{% url 'produtos' %}">Escolha um produto</a> para continuar.</p>
+            {% endif %}
+            {% if pedido.status == 'carrinho' and pedido.itens.all %}
+                <form class="order-actions" method="post" action="{% url 'finalizar_pedido' %}" onsubmit="return confirm('Deseja finalizar este pedido?');">
+                    {% csrf_token %}
+                    <button class="button button-primary" type="submit">Finalizar pedido</button>
+                </form>
+            {% endif %}
+        </section>
+        {% endfor %}
+    </div>
+{% else %}
+    <div class="empty-state"><span class="empty-icon">▣</span><h2>Você ainda não tem pedidos</h2><p>Adicione produtos ao carrinho para acompanhar seus pedidos aqui.</p><a class="button button-primary" href="{% url 'produtos' %}">Explorar produtos</a></div>
+{% endif %}
+{% endblock %}

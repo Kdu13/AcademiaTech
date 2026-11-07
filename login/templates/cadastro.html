@@ -1,0 +1,18 @@
+{% extends 'template.html' %}
+
+{% block titulo %}Criar conta{% endblock %}
+
+{% block conteudo %}
+<section class="auth-layout">
+    <div class="auth-aside"><span class="eyebrow">Comece por aqui</span><h1>Seu próximo passo na tecnologia começa agora.</h1><p>Crie sua conta e acompanhe seus cursos, pedidos e progresso.</p><div class="auth-decoration" aria-hidden="true">A<span>T</span></div></div>
+    <div class="form-card auth-card">
+        <span class="eyebrow eyebrow-dark">Novo por aqui?</span><h2>Novo usuário</h2><p class="form-intro">Preencha seus dados para começar.</p>
+        <form class="stacked-form" method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button class="button button-primary button-wide" type="submit">Criar minha conta</button>
+        </form>
+        <p class="auth-switch">Já tem uma conta? <a href="{% url 'login' %}">Entrar</a></p>
+    </div>
+</section>
+{% endblock %}

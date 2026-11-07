@@ -1,0 +1,30 @@
+{% extends 'template.html' %}
+
+{% block titulo %} Novo Curso {% endblock %}
+
+{% block conteudo %}
+<section class="form-page">
+    <a class="back-link" href="{% url 'servicos' %}">← Voltar para cursos</a>
+    <div class="form-card">
+        <span class="eyebrow eyebrow-dark">Catálogo da Academia</span>
+        <h1>Novo curso</h1>
+        <p class="form-intro">Preencha os detalhes e, se quiser, envie uma imagem para o Supabase Storage.</p>
+        <form class="stacked-form" action="{% url 'addServico' %}" method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <div class="current-course-image" id="curso-preview-wrap" hidden><img id="curso-preview" alt="Pré-visualização da imagem do curso"><span>Pré-visualização</span></div>
+            <button class="button button-primary button-wide" type="submit">Cadastrar curso</button>
+        </form>
+    </div>
+</section>
+<script>
+    const imagemCursoInput = document.getElementById("id_imagem_upload");
+    const imagemCursoPreview = document.getElementById("curso-preview");
+    const imagemCursoWrap = document.getElementById("curso-preview-wrap");
+    imagemCursoInput.addEventListener("change", () => {
+        const arquivo = imagemCursoInput.files[0];
+        imagemCursoWrap.hidden = !arquivo;
+        if (arquivo) imagemCursoPreview.src = URL.createObjectURL(arquivo);
+    });
+</script>
+{% endblock %}

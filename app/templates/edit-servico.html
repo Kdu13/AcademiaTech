@@ -1,0 +1,37 @@
+{% extends 'template.html' %}
+
+{% block titulo %} Editar Curso {% endblock %}
+
+{% block conteudo %}
+<section class="form-page">
+    <a class="back-link" href="{% url 'servicos' %}">← Voltar para cursos</a>
+    <div class="form-card">
+        <span class="eyebrow eyebrow-dark">Catálogo da Academia</span>
+        <h1>Editar curso</h1>
+        <p class="form-intro">Atualize os dados do curso e mantenha, troque ou remova a imagem.</p>
+        <div class="current-course-image" id="curso-preview-wrap" {% if not servico.imagem %}hidden{% endif %}>{% if servico.imagem %}<img id="curso-preview" src="{{ servico.imagem }}" alt="Imagem atual de {{ servico.nome }}">{% else %}<img id="curso-preview" alt="Pré-visualização da imagem do curso">{% endif %}<span>Pré-visualização da imagem</span></div>
+        <form class="stacked-form" method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button class="button button-primary button-wide" type="submit">Salvar alterações</button>
+        </form>
+    </div>
+</section>
+<script>
+    const imagemCursoInput = document.getElementById("id_imagem_upload");
+    const imagemCursoPreview = document.getElementById("curso-preview");
+    const imagemCursoWrap = document.getElementById("curso-preview-wrap");
+    const limparImagemInput = document.getElementById("id_limpar_imagem");
+    imagemCursoInput.addEventListener("change", () => {
+        const arquivo = imagemCursoInput.files[0];
+        if (arquivo) {
+            imagemCursoPreview.src = URL.createObjectURL(arquivo);
+            imagemCursoWrap.hidden = false;
+            limparImagemInput.checked = false;
+        }
+    });
+    limparImagemInput.addEventListener("change", () => {
+        if (limparImagemInput.checked && !imagemCursoInput.files.length) imagemCursoWrap.hidden = true;
+    });
+</script>
+{% endblock %}

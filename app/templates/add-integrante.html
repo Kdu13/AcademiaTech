@@ -1,0 +1,44 @@
+{% extends "template.html" %}
+
+{% block titulo %}Novo integrante{% endblock %}
+
+{% block conteudo %}
+<section class="form-page">
+    <a class="back-link" href="{% url 'integrantes' %}">← Voltar para a equipe</a>
+    <div class="form-card">
+        <span class="eyebrow eyebrow-dark">Nosso time</span>
+        <h1>Novo integrante</h1>
+        <p class="form-intro">Apresente uma pessoa da equipe e o que ela faz.</p>
+
+        {% for message in messages %}<div class="notice {% if message.tags == 'error' %}notice-error{% else %}notice-success{% endif %}">{{ message }}</div>{% endfor %}
+
+        <form class="stacked-form" method="post" action="{% url 'addIntegrante' %}">
+            {% csrf_token %}
+            <label for="nome">Nome</label>
+            <input type="text" name="nome" id="nome" placeholder="Ex.: Ana Silva" required>
+
+            <label for="cargo">Cargo</label>
+            <input type="text" name="cargo" id="cargo" placeholder="Ex.: Designer de produto" required>
+
+            <label for="biografia">Biografia</label>
+            <textarea name="biografia" id="biografia" rows="5" placeholder="Conte um pouco sobre a pessoa e seu trabalho" required></textarea>
+
+            <label for="foto">Foto <span class="label-hint">(opcional)</span></label>
+            <input type="url" name="foto" id="foto" placeholder="https://exemplo.com/foto.jpg">
+            <div class="team-form-preview" id="foto-preview-wrap" hidden><span>Pré-visualização</span><img id="foto-preview" alt="Pré-visualização da foto do integrante"></div>
+
+            <button class="button button-primary button-wide" type="submit">Cadastrar integrante</button>
+        </form>
+    </div>
+</section>
+<script>
+    const fotoInput = document.getElementById("foto");
+    const fotoPreview = document.getElementById("foto-preview");
+    const fotoPreviewWrap = document.getElementById("foto-preview-wrap");
+    fotoInput.addEventListener("input", () => {
+        fotoPreviewWrap.hidden = !fotoInput.value;
+        fotoPreview.src = fotoInput.value;
+    });
+    fotoPreview.addEventListener("error", () => { fotoPreviewWrap.hidden = true; });
+</script>
+{% endblock %}

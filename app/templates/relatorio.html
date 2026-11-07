@@ -1,0 +1,86 @@
+{% extends 'template.html' %}
+
+{% block titulo %}Relatórios{% endblock %}
+
+{% block conteudo %}
+<section class="page-heading">
+    <div>
+        <span class="eyebrow eyebrow-dark">Visão geral</span>
+        <h1>Relatórios</h1>
+        <p>Acompanhe a situação dos cursos e sua distribuição por categoria.</p>
+    </div>
+</section>
+
+<section class="stats-grid" aria-label="Resumo dos cursos">
+    <article class="stat-card"><span class="stat-label">Total de cursos</span><strong>{{ total_servicos }}</strong><span class="stat-caption">cadastrados no sistema</span></article>
+    <article class="stat-card"><span class="stat-label">Cursos ativos</span><strong>{{ servicos_ativos }}</strong><span class="stat-caption">disponíveis no catálogo</span></article>
+    <article class="stat-card"><span class="stat-label">Cursos inativos</span><strong>{{ servicos_inativos }}</strong><span class="stat-caption">fora do catálogo público</span></article>
+</section>
+
+<section class="reports-grid" aria-label="Gráficos dos cursos">
+    <article class="panel chart-card">
+        <div class="section-heading"><div><h2>Status dos cursos</h2><p>Ativos e inativos</p></div></div>
+        <div class="chart-area"><canvas id="graficoStatus" aria-label="Gráfico de status dos cursos" role="img"></canvas></div>
+    </article>
+    <article class="panel chart-card">
+        <div class="section-heading"><div><h2>Cursos por categoria</h2><p>Quantidade cadastrada em cada categoria</p></div></div>
+        {% if categorias_labels %}
+            <div class="chart-area"><canvas id="graficoCategorias" aria-label="Gráfico de cursos por categoria" role="img"></canvas></div>
+        {% else %}
+            <div class="chart-empty">Ainda não há cursos para exibir por categoria.</div>
+        {% endif %}
+    </article>
+</section>
+
+{{ categorias_labels|json_script:"categorias-labels" }}
+{{ categorias_valores|json_script:"categorias-valores" }}
+{{ servicos_ativos|json_script:"servicos-ativos" }}
+{{ servicos_inativos|json_script:"servicos-inativos" }}
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4"></script>
+<script>
+    const categoriasLabels = JSON.parse(document.getElementById("categorias-labels").textContent);
+    const categoriasValores = JSON.parse(document.getElementById("categorias-valores").textContent);
+    const servicosAtivos = JSON.parse(document.getElementById("servicos-ativos").textContent);
+    const servicosInativos = JSON.parse(document.getElementById("servicos-inativos").textContent);
+
+    if (window.Chart) {
+        new Chart(document.getElementById("graficoStatus"), {
+            type: "doughnut",
+            data: {
+                labels: ["Ativos", "Inativos"],
+                datasets: [{
+                    data: [servicosAtivos, servicosInativos],
+                    backgroundColor: ["#128271", "#d77a39"],
+                    borderWidth: 0,
+                    hoverOffset: 6
+                }]
+            },
+            options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: "bottom" } } }
+        });
+
+        const graficoCategorias = document.getElementById("graficoCategorias");
+        if (graficoCategorias) {
+            new Chart(graficoCategorias, {
+                type: "bar",
+                data: {
+                    labels: categoriasLabels,
+                    datasets: [{
+                    label: "Cursos por categoria",
+                        data: categoriasValores,
+                    backgroundColor: "#128271",
+                        borderRadius: 7,
+                        maxBarThickness: 54
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: { y: { beginAtZero: true, ticks: { precision: 0 } } },
+                    plugins: { legend: { display: false } }
+                }
+            });
+        }
+    }
+</script>
+{% endblock %}

@@ -1,0 +1,52 @@
+{% extends 'template.html' %}
+{% load moeda %}
+
+{% block titulo %}Cursos{% endblock %}
+
+{% block conteudo %}
+<section class="page-heading">
+    <div>
+        <span class="eyebrow eyebrow-dark">Catálogo administrativo</span>
+        <h1>Cursos da Academia</h1>
+        <p>Gerencie os cursos disponíveis no catálogo da Academia Tech.</p>
+    </div>
+    {% if pode_gerenciar %}<a class="button button-primary" href="{% url 'addServico' %}"><span aria-hidden="true">＋</span> Novo curso</a>{% endif %}
+</section>
+
+{% for message in messages %}<div class="notice {% if message.tags == 'error' %}notice-error{% else %}notice-success{% endif %}" role="status">{{ message }}</div>{% endfor %}
+
+<section class="stats-grid" aria-label="Resumo dos cursos">
+    <article class="stat-card"><span class="stat-label">Cursos encontrados</span><strong>{{ total_servicos }}</strong><span class="stat-caption">{{ servicos_ativos }} ativos · {{ servicos_inativos }} inativos</span></article>
+    {% if mais_barato %}<article class="stat-card"><span class="stat-label">Menor preço</span><strong>{{ mais_barato.preco|moeda_brl }}</strong><span class="stat-caption">{{ mais_barato.nome }}</span></article>{% endif %}
+    {% if mais_caro %}<article class="stat-card"><span class="stat-label">Maior preço</span><strong>{{ mais_caro.preco|moeda_brl }}</strong><span class="stat-caption">{{ mais_caro.nome }}</span></article>{% endif %}
+</section>
+
+<section class="panel filter-panel">
+    <div class="section-heading"><div><h2>Encontre um curso</h2><p>Filtre por nome, categoria, faixa de preço ou ordem.</p></div></div>
+    <form class="filter-form" method="get">
+        <label class="search-field"><span class="sr-only">Buscar curso</span><span aria-hidden="true">⌕</span><input type="search" name="busca" placeholder="Buscar pelo nome" value="{{ busca|default:'' }}"></label>
+        <label><span class="sr-only">Categoria</span><select name="categoria"><option value="">Todas as categorias</option>{% for categoria_item in categorias %}<option value="{{ categoria_item.id }}" {% if categoria == categoria_item.id|stringformat:'s' %}selected{% endif %}>{{ categoria_item.nome }}</option>{% endfor %}</select></label>
+        <label><span class="sr-only">Faixa de preço</span><select name="preco"><option value="">Qualquer preço</option><option value="baixo" {% if preco == 'baixo' %}selected{% endif %}>Até R$ 500</option><option value="medio" {% if preco == 'medio' %}selected{% endif %}>R$ 500 a R$ 1.500</option><option value="alto" {% if preco == 'alto' %}selected{% endif %}>Acima de R$ 1.500</option></select></label>
+        <label><span class="sr-only">Ordenação</span><select name="ordem"><option value="nome" {% if ordem == 'nome' or not ordem %}selected{% endif %}>Nome</option><option value="menor" {% if ordem == 'menor' %}selected{% endif %}>Menor preço</option><option value="maior" {% if ordem == 'maior' %}selected{% endif %}>Maior preço</option></select></label>
+        <div class="filter-actions"><button class="button button-primary" type="submit">Aplicar filtros</button><a class="button button-secondary" href="{% url 'servicos' %}">Limpar</a></div>
+    </form>
+</section>
+
+<section class="content-section">
+    <div class="section-heading"><div><h2>Catálogo</h2><p>{{ total_servicos }} curso(s) encontrado(s)</p></div></div>
+    {% if tem_servicos %}
+        <div class="table-wrap"><table class="data-table">
+            <thead><tr><th>Curso</th><th>Descrição</th><th>Preço</th><th>Imagem</th>{% if pode_gerenciar %}<th class="actions-heading">Ações</th>{% endif %}</tr></thead>
+            <tbody>{% for serv in servicos %}<tr>
+                <td data-label="Curso"><strong>{{ serv.nome }}</strong>{% if serv.categoria %}<span class="table-subtext">{{ serv.categoria.nome }}</span>{% endif %}<span class="table-subtext">{% if serv.ativo %}Ativo{% else %}Inativo{% endif %}</span></td>
+                <td data-label="Descrição">{{ serv.descricao|default:'—' }}</td>
+                <td data-label="Preço"><span class="price-tag">{{ serv.preco|moeda_brl }}</span></td>
+                <td data-label="Imagem">{% if serv.imagem %}<img class="table-image" src="{{ serv.imagem }}" alt="Imagem de {{ serv.nome }}">{% else %}<span class="muted">Sem imagem</span>{% endif %}</td>
+                {% if pode_gerenciar %}<td data-label="Ações"><div class="row-actions"><a class="text-action" href="{% url 'editServico' serv.id %}">Editar</a><form method="post" action="{% url 'delServico' serv.id %}" onsubmit="return confirm('Deseja realmente excluir este curso?');">{% csrf_token %}<button class="text-action danger-action" type="submit">Excluir</button></form></div></td>{% endif %}
+            </tr>{% endfor %}</tbody>
+        </table></div>
+    {% else %}
+        <div class="empty-state"><span class="empty-icon">⌕</span><h3>Nenhum curso encontrado</h3><p>Tente mudar os filtros{% if pode_gerenciar %} ou cadastre um novo curso{% endif %}.</p>{% if pode_gerenciar %}<a class="button button-primary" href="{% url 'addServico' %}">Cadastrar curso</a>{% endif %}</div>
+    {% endif %}
+</section>
+{% endblock %}

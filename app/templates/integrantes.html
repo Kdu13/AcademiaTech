@@ -1,0 +1,31 @@
+{% extends "template.html" %}
+
+{% block titulo %}Equipe{% endblock %}
+
+{% block conteudo %}
+<section class="page-heading">
+    <div><span class="eyebrow eyebrow-dark">Administração</span><h1>Equipe</h1><p>Gerencie os integrantes armazenados no Supabase.</p></div>
+    {% if pode_gerenciar %}<a class="button button-primary" href="{% url 'addIntegrante' %}"><span aria-hidden="true">＋</span> Adicionar integrante</a>{% endif %}
+</section>
+
+{% for message in messages %}<div class="notice {% if message.tags == 'error' %}notice-error{% else %}notice-success{% endif %}" role="status">{{ message }}</div>{% endfor %}
+
+{% if supabase_erro %}
+    <div class="notice notice-error" role="status">Não foi possível carregar a equipe remota agora. Confira a conexão Supabase e tente novamente.</div>
+{% elif integrantes %}
+    <div class="team-grid">
+        {% for integrante in integrantes %}
+        <article class="team-card">
+            {% if integrante.foto_url %}<img class="team-photo" src="{{ integrante.foto_url }}" alt="Foto de {{ integrante.nome }}" loading="lazy">{% else %}<div class="team-avatar" aria-hidden="true">{{ integrante.nome|first|upper }}</div>{% endif %}
+            <div class="team-info"><span class="team-role">{{ integrante.cargo }}</span><h2>{{ integrante.nome }}</h2><p>{{ integrante.biografia|linebreaksbr }}</p></div>
+            {% if pode_gerenciar %}<div class="team-actions team-action-row"><a class="button button-secondary" href="{% url 'editIntegrante' integrante.id %}">Editar</a><form method="post" action="{% url 'delIntegrante' integrante.id %}" onsubmit="return confirm('Deseja realmente excluir este integrante?');">
+                {% csrf_token %}
+                <button class="button button-danger-soft" type="submit">Excluir integrante</button>
+            </form></div>{% endif %}
+        </article>
+        {% endfor %}
+    </div>
+{% else %}
+    <div class="empty-state"><span class="empty-icon">◎</span><h2>A equipe aparece aqui</h2><p>Nenhum integrante cadastrado ainda.</p>{% if pode_gerenciar %}<a class="button button-primary" href="{% url 'addIntegrante' %}">Adicionar integrante</a>{% endif %}</div>
+{% endif %}
+{% endblock %}

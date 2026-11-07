@@ -1,0 +1,80 @@
+COMO EXECUTAR A ACADEMIA TECH NO WINDOWS
+=======================================
+
+1. Extraia a pasta do projeto e abra um terminal dentro dela. A pasta certa
+   contém o arquivo manage.py.
+
+2. Confira se o Python 3.12 está instalado:
+
+   py -3.12 --version
+
+3. Crie e ative um ambiente virtual no PowerShell:
+
+   py -3.12 -m venv .venv
+   .\.venv\Scripts\Activate.ps1
+
+   Se a ativação for bloqueada, use o Prompt de Comando (cmd):
+
+   .venv\Scripts\activate.bat
+
+4. Instale as dependências:
+
+   python -m pip install --upgrade pip
+   python -m pip install -r requirements.txt
+
+5. Configure o arquivo de ambiente. No PowerShell:
+
+   if (!(Test-Path .env)) { Copy-Item .env.example .env }
+   notepad .env
+
+   Se o arquivo .env já existir, não o substitua: apenas revise os valores que faltam.
+
+   Para usar Quem Somos, cadastro de integrantes e envio de imagens, preencha
+   SUPABASE_URL, SUPABASE_KEY (chave secreta do projeto) e SUPABASE_BUCKET=cursos.
+   Não coloque essa chave em HTML, JavaScript ou no repositório.
+
+6. No Supabase, execute uma vez cada script SQL:
+
+   supabase/seguranca-integrantes.sql
+   supabase/storage-servicos.sql
+
+7. Prepare e popule o banco local:
+
+   python manage.py migrate
+   python manage.py popular_academia_tech --senha-cliente-demo "DefinaUmaSenhaForte"
+   python manage.py createsuperuser
+   python manage.py check
+   python manage.py test
+
+   O SQLite local é criado em db.sqlite3. Esse arquivo é ignorado pelo Git e
+   não precisa ser copiado para a hospedagem.
+
+8. Inicie o site:
+
+   python manage.py runserver
+
+9. Abra http://127.0.0.1:8000/ no navegador.
+
+PÁGINAS
+-------
+Início:          http://127.0.0.1:8000/
+Quem Somos:      http://127.0.0.1:8000/quem-somos/
+Produtos:        http://127.0.0.1:8000/produtos/
+Contato:         http://127.0.0.1:8000/contato/
+Entrar:          http://127.0.0.1:8000/login/
+Admin:           http://127.0.0.1:8000/admin/
+
+Serviços, Equipe, Contatos e Relatórios exigem uma conta administradora. Crie
+essa conta com createsuperuser; clientes comuns usam o cadastro na página Entrar.
+O cliente de demonstração é cliente_demo e usa a senha passada ao comando acima.
+
+Para encerrar o servidor, pressione Ctrl+C no terminal. Para sair do ambiente
+virtual, digite deactivate.
+
+OBSERVAÇÕES
+-----------
+- Execute todos os comandos no diretório que contém manage.py.
+- Não copie o ambiente virtual Linux para o Windows. Crie o .venv novamente.
+- O formulário de redefinição de senha imprime o e-mail no terminal local.
+- As imagens de cursos são enviadas ao bucket público cursos no Supabase.
+- Nunca compartilhe .env nem a chave secreta do Supabase.

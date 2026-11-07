@@ -1,0 +1,39 @@
+{% extends 'template.html' %}
+
+{% block titulo %}Quem Somos{% endblock %}
+
+{% block conteudo %}
+<section class="about-hero">
+    <span class="eyebrow eyebrow-dark">Quem somos</span>
+    <h1>Tecnologia acessível para abrir novos caminhos.</h1>
+    <p>A Academia Tech nasceu para tornar o aprendizado em tecnologia mais direto, prático e conectado ao mercado. Nossas trilhas ajudam cada pessoa a transformar estudo em projetos e novas oportunidades.</p>
+    <a class="button button-primary" href="{% url 'produtos' %}">Conheça os cursos</a>
+</section>
+
+<section class="home-highlights about-benefits">
+    <article class="highlight-card"><span class="highlight-icon">⌘</span><div><h2>Aprender fazendo</h2><p>Exercícios e projetos acompanham o conteúdo.</p></div></article>
+    <article class="highlight-card"><span class="highlight-icon highlight-icon-teal">◎</span><div><h2>Trilhas atuais</h2><p>Programação, design, dados e infraestrutura.</p></div></article>
+    <article class="highlight-card"><span class="highlight-icon highlight-icon-orange">∞</span><div><h2>Estudo no seu ritmo</h2><p>Conteúdo com suporte e acesso vitalício.</p></div></article>
+</section>
+
+<section class="content-section">
+    <div class="section-heading">
+        <div><h2>Conheça a equipe</h2><p>Os integrantes abaixo são consultados no banco remoto Supabase.</p></div>
+        {% if pode_gerenciar %}<a class="button button-secondary" href="{% url 'integrantes' %}">Gerenciar equipe</a>{% endif %}
+    </div>
+    {% if supabase_erro %}
+        <div class="notice notice-error" role="status">Nossa equipe está temporariamente indisponível. Tente novamente em alguns minutos.</div>
+    {% elif integrantes %}
+        <div class="team-grid">
+            {% for integrante in integrantes %}
+            <article class="team-card">
+                {% if integrante.foto_url %}<img class="team-photo" src="{{ integrante.foto_url }}" alt="Foto de {{ integrante.nome }}" loading="lazy">{% else %}<div class="team-avatar" aria-hidden="true">{{ integrante.nome|first|upper }}</div>{% endif %}
+                <div class="team-info"><span class="team-role">{{ integrante.cargo }}</span><h2>{{ integrante.nome }}</h2><p>{{ integrante.biografia|linebreaksbr }}</p></div>
+            </article>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="empty-state"><span class="empty-icon">◎</span><h2>Estamos apresentando a equipe</h2><p>Os perfis dos integrantes aparecerão aqui.</p></div>
+    {% endif %}
+</section>
+{% endblock %}

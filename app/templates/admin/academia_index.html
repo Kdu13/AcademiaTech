@@ -1,0 +1,19 @@
+{% extends "admin/base_site.html" %}
+{% load i18n %}
+
+{% block content %}
+<div id="content-main">
+    <div class="module">
+        <table>
+            <caption>Atalhos da Academia Tech</caption>
+            <tr><th><a href="{% url 'perfil' %}">Editar perfil</a></th><td>Atualize seus dados de acesso.</td></tr>
+            <tr><th><a href="{% url 'lista_contatos' %}">Contatos</a></th><td>Leia e organize mensagens recebidas.</td></tr>
+            <tr><th><a href="{% url 'servicos' %}">Serviços</a></th><td>Gerencie o catálogo de cursos, filtros e preços.</td></tr>
+            <tr><th><a href="{% url 'integrantes' %}">Equipe</a></th><td>Atualize os integrantes no Supabase.</td></tr>
+            <tr><th><a href="{% url 'relatorios' %}">Relatórios</a></th><td>Consulte os indicadores dos cursos.</td></tr>
+            <tr><th><a href="{% url 'produtos' %}">Catálogo público</a></th><td>Confira a experiência de compra.</td></tr>
+        </table>
+    </div>
+    {% include "admin/app_list.html" with app_list=app_list show_changelinks=True %}
+</div>
+{% endblock %}

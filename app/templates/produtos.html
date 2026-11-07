@@ -1,0 +1,63 @@
+{% extends 'template.html' %}
+{% load moeda %}
+
+{% block titulo %}Produtos{% endblock %}
+
+{% block conteudo %}
+<section class="page-heading">
+    <div><span class="eyebrow eyebrow-dark">Aprenda tecnologia</span><h1>Cursos e equipamentos</h1><p>Escolha um curso para desenvolver novas habilidades ou conheça equipamentos de parceiros.</p></div>
+    <a class="button button-secondary" href="{% url 'novo_contato' %}">Precisa de ajuda?</a>
+</section>
+
+{% for message in messages %}<div class="notice {% if message.tags == 'error' %}notice-error{% else %}notice-success{% endif %}" role="status">{{ message }}</div>{% endfor %}
+
+<section class="content-section">
+    <div class="section-heading"><div><h2>Cursos da Academia</h2><p>Cursos cadastrados no catálogo da Academia Tech.</p></div></div>
+    {% if servicos %}
+        <div class="product-grid">
+            {% for servico in servicos %}
+            <article class="product-card">
+                <div class="product-image">{% if servico.imagem %}<img src="{{ servico.imagem }}" alt="{{ servico.nome }}" loading="lazy">{% else %}<span aria-hidden="true">⌘</span>{% endif %}</div>
+                <div class="product-body">
+                    <span class="product-category">{% if servico.categoria %}{{ servico.categoria.nome }}{% else %}Curso{% endif %}</span>
+                    <h2>{{ servico.nome }}</h2>
+                    <p>{{ servico.descricao|default:'Aprenda com conteúdo prático e projetos guiados.' }}</p>
+                    <div class="product-footer"><strong>{{ servico.preco|moeda_brl }}</strong>
+                        {% if pode_comprar %}<form class="buy-form" method="post" action="{% url 'adicionar_ao_carrinho' servico.id %}">{% csrf_token %}<button class="buy-button" type="submit">Comprar</button></form>
+                        {% elif not user.is_authenticated %}<a class="login-buy-link" href="{% url 'login' %}?next={% url 'produtos' %}" aria-label="Entre para comprar {{ servico.nome }}">Entrar para comprar</a>
+                        {% else %}<span class="product-rating">Acesso administrativo</span>{% endif %}
+                    </div>
+                </div>
+            </article>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="empty-state"><span class="empty-icon">⌘</span><h2>Estamos preparando novos cursos</h2><p>Volte em breve para conferir as próximas turmas e trilhas.</p></div>
+    {% endif %}
+</section>
+
+<section class="content-section">
+    <div class="section-heading"><div><h2>Equipamentos de Parceiros</h2><p>Produtos externos consultados no DummyJSON; a compra não é feita por esta plataforma.</p></div></div>
+    {% if api_erro %}
+        <div class="notice notice-error" role="status">Equipamentos temporariamente indisponíveis. Os cursos da Academia continuam acessíveis.</div>
+    {% endif %}
+    {% if produtos_api %}
+        <div class="product-grid">
+            {% for prod in produtos_api %}
+            <article class="product-card">
+                <div class="product-image external-product-image">{% if prod.image %}<img src="{{ prod.image }}" alt="{{ prod.title }}" loading="lazy">{% else %}<span aria-hidden="true">▧</span>{% endif %}</div>
+                <div class="product-body">
+                    <span class="product-category">{{ prod.category }}</span>
+                    <h2>{{ prod.title }}</h2>
+                    <p>{{ prod.description }}</p>
+                    <div class="product-footer"><strong>{{ prod.price_brl_text }}</strong><span class="product-rating">Parceiro externo</span></div>
+                </div>
+            </article>
+            {% endfor %}
+        </div>
+        <p class="exchange-note">{{ observacao_cotacao }}</p>
+    {% elif not api_erro %}
+        <div class="empty-state"><span class="empty-icon">▧</span><h2>Nenhum equipamento encontrado</h2><p>Tente atualizar a página em alguns instantes.</p></div>
+    {% endif %}
+</section>
+{% endblock %}

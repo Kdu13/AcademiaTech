@@ -1,0 +1,24 @@
+{% extends 'template.html' %}
+
+{% block titulo %}Contato{% endblock %}
+
+{% block conteudo %}
+<section class="contact-layout">
+    <div class="contact-copy">
+        <span class="eyebrow eyebrow-dark">Vamos conversar</span>
+        <h1>Conte pra gente onde você quer chegar.</h1>
+        <p>Tem dúvidas sobre os cursos ou precisa de orientação? A equipe da Academia Tech está pronta para ajudar.</p>
+        <div class="contact-detail"><span class="contact-detail-icon">✦</span><span>Uma conversa pode ser o primeiro passo da sua próxima jornada.</span></div>
+    </div>
+    <div class="form-card contact-card">
+        <h2>Fale com a Academia Tech</h2>
+        <p class="form-intro">Envie sua dúvida, sugestão ou solicitação. Não é preciso entrar na conta.</p>
+        {% for message in messages %}<div class="notice {% if message.tags == 'error' %}notice-error{% else %}notice-success{% endif %}">{{ message }}</div>{% endfor %}
+        <form class="stacked-form" method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button class="button button-primary button-wide" type="submit">Enviar mensagem <span aria-hidden="true">→</span></button>
+        </form>
+    </div>
+</section>
+{% endblock %}
