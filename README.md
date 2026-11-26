@@ -104,4 +104,3 @@ Consulte `.env.example` para ver as variáveis necessárias. Não publique o arq
 ## Banco de dados e imagens
 
 No desenvolvimento local, o projeto utiliza o banco local configurado. No ambiente online, utiliza o banco remoto do Supabase. As imagens são armazenadas no Supabase Storage; use o endereço público da imagem no campo correspondente do sistema.
-```markdown
